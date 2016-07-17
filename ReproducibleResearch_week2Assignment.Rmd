@@ -1,0 +1,63 @@
+---
+title: "ReproducibleResearch_week2Assignment"
+author: "JPalomar"
+date: "16 de julio de 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document to analyse the data in 
+
+```{r PeerReviewAssignment1}
+setwd("D:\\Cursos\\Coursera\\DataScience\\Reproducible_Research\\week2")
+# Read file
+activity<-read.csv("activity.csv")
+
+#Remove NA
+activityClean<-na.omit(activity)
+perDay<-aggregate(cbind(steps,interval)~date,data=activityClean,FUN=sum)
+stepsPerDay<-as.numeric(perDay$steps)
+hist(stepsPerDay)
+medianSteps<-median(stepsPerDay)
+meanSteps<-mean(stepsPerDay)
+meanSteps
+medianSteps
+```
+
+ 1. Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
+```{r}
+
+b<-aggregate(cbind(steps,date)~interval,data=activityClean,FUN=mean)
+plot(x=b$interval,y=b$steps,type="l",xlab="interval",ylab="Average steps",main="Average steps per interval")
+
+
+```
+
+  2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+  ```{r}
+b$interval[b$steps==max(b$steps)]
+
+```
+  
+Calculate number of NA:
+
+```{r}
+sum(is.na(activity)==TRUE)
+
+activityFull<-activity
+isna<-is.na(activityFull$steps)
+activityFull$steps[isna]<-b$steps[date=activityFull$date[isna]]
+perDayFull<-aggregate(cbind(steps,interval)~date,data=activityFull,FUN=sum)
+stepsPerDayFull<-as.numeric(perDayFull$steps)
+hist(stepsPerDayFull)
+medianStepsFull<-median(stepsPerDayFull)
+meanStepsFull<-mean(stepsPerDayFull)
+meanStepsFull
+medianStepsFull
+
+```
